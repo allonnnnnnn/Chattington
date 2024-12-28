@@ -1,0 +1,173 @@
+    body {
+        margin: 0;
+    }
+
+    #addFriendPopup {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: 20% auto;
+        width: 500px;
+        height: 250px;
+        border-radius: 2.5%;
+        border: 2px solid black;
+        background-color: white;
+        text-align: center;
+    }
+
+    #addFriendPopup img {
+        position: absolute;
+        margin: 7px;
+        width: 30px;
+        height: 30px;
+        right: 0;
+    }
+
+    #addFriendPopup h2 {
+        margin: 10px auto;
+        width: 80%;
+    }
+
+    #addFriendPopup form {
+        height: 50px;
+        margin: auto 0;
+    }
+
+    #container {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: repeat(12, 1fr);
+    }
+
+    #header {
+        display: flex;
+        justify-content: space-between;
+        grid-row: 1;
+        grid-column: span 12;
+        gap: 5px;
+        padding: 5px;
+        align-items: center;
+        border: 2px solid black;
+    }
+
+    #header>h2 {
+        margin: auto;
+    }
+
+    #header>button {
+        height: 40px;
+        width: 80px;
+        font-size: large;
+    }
+
+    #channels {
+        grid-column: span 3;
+        grid-row: span 12;
+        border: 2px solid black;
+        padding: 5px 15px;
+        overflow-y: scroll;
+    }
+
+    #addUser {
+        display: block;
+        margin-left: auto;
+        height: 30px;
+        width: 30px;
+    }
+
+    #channels>div {
+        display: flex;
+        margin: 10px 0;
+        border-top: 2px solid black;
+        border-bottom: 2px solid black;
+    }
+
+    #channels>div:hover {
+        background-color: rgb(237, 237, 237);
+    }
+
+    .friendName {
+        margin: auto;
+    }
+
+    .profilePicture {
+        margin: 7.5px 0;
+        border-radius: 50%;
+        height: 3vw;
+        width: 3vw;
+        border: 5px solid black;
+        overflow: hidden;
+    }
+
+    .profilePicture img {
+        height: 3vw;
+        width: 3vw;
+    }
+
+    #chatroom {
+        display: grid;
+        grid-template-rows: repeat(12, 1fr);
+        grid-template-columns: repeat(12, 1fr);
+        grid-row: span 11;
+        grid-column: span 9;
+        border: 2px solid black;
+    }
+
+    #messages {
+        grid-column: span 12;
+        grid-row: span 10;
+        display: flex;
+        gap: 5px;
+        flex-direction: column-reverse;
+        padding: 10px 30px;
+        overflow-y: scroll;
+        background-color: blueviolet;
+    }
+
+    .userMessage, .friendMessage {
+        display: flex;
+        justify-content: flex-end;
+        gap: 5px;
+        text-align: right;
+    }
+
+    .friendMessage {
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .userMessage>.profilePicture>img {
+        margin: auto;
+    }
+
+    .userMessage>div *, .friendMessage>div *  {
+        margin: 0;
+    }
+
+    #messageInput {
+        grid-column: span 12;
+        grid-row: span 2;
+        padding: 20px;
+        background-color: darksalmon;
+    }
+
+    #messageInput form {
+        display: flex;
+        height: 100%;
+    }
+
+    #messageInput [type="text"] {
+        font-size: 25pt;
+        width: 90%;
+        height: 95%;
+    }
+
+    #messageInput [type="submit"] {
+        width: 8%;
+        height: 100%;
+    }

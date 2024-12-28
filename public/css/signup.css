@@ -1,0 +1,41 @@
+body {
+    height: 100vh;
+}
+
+h2 {
+    text-align: center;
+}
+
+#signupWidget {
+    margin: 0 auto;
+    padding: 0 5px;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    width: 200px;
+}
+
+#signupWidget>form {
+    border: 2px solid black;
+    border-radius: 5%;
+    width: 90%;
+    height: 100%;
+    padding: 10px;
+    margin: auto 0;
+    margin-top: 15px;
+}
+
+#signupWidget>form label {
+    margin-bottom: 20px;
+}
+
+#signupWidget>form input {
+    /* margin-bottom: 6px;
+    margin-top: 2px;
+    margin-left: 2px; */
+    padding: 3px 5px;
+}
+
+#signupWidget>form input[type="submit"] {
+    margin-top: 20px;
+}

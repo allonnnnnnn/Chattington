@@ -1,0 +1,29 @@
+body {
+    height: 100vh;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+}
+
+#loginWidget {
+    height: 150px;
+    width: 200px;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5%;
+}
+
+#loginWidget form {
+    width: 100%;
+    height: 100%;
+}
+
+#loginWidget form>input {
+    margin-bottom: 6px;
+    margin-top: 2px;
+    margin-left: 2px;
+    padding: 3.5px 5px;
+}
+
+

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div id="container">
+        <div id="addFriendPopup" style="display: none;">
+            <img src="/images/exitIcon.png" alt="">
+            <h2>Add a friend in the field below with their email</h2>
+            <form>
+                <input type="email">
+                <input type="submit" name="">
+                <p style="margin: 0; color: red;" id="addFriendMessage"></p>
+            </form>
+        </div>
+        <div id="header">
+            <h2>ChattingTon</h2>
+            <h3>Hi, <span id="username-here"></span></h3>
+            <button id="logoutButton">Logout</button>
+        </div>
+        <div id="channels">
+            <img src="/images/plusIcon.png" id="addUser" alt="">
+            <template id="channelTemplate">
+                <div>
+                    <div class="profilePicture">
+                        <img src="/images/profilePictureTemplate.png" alt="profile picture">
+                    </div>
+                    <h2 class="friendName">Username here</h2>
+                    <img src="/images/exitIcon.png" id="unfriendButton" alt="" height="25px" width="25px"
+                        style="margin: auto 0;">
+                </div>
+            </template>
+        </div>
+        <div id="chatroom">
+            <template id="userMessageTemplate">
+                <div class="userMessage">
+                    <div class="userMessageText">
+                        <h4 class="name">Insert-name-here</h4>
+                        <p class="text"></p>
+                    </div>
+                    <div class="profilePicture">
+                        <img src="/images/profilePictureTemplate.png" alt="profile picture">
+                    </div>
+                </div>
+            </template>
+            <template id="friendMessageTemplate">
+                <div class="friendMessage">
+                    <div class="profilePicture">
+                        <img src="/images/profilePictureTemplate.png" alt="profile picture">
+                    </div>
+                    <div class="friendMessageText">
+                        <h4 class="name">Insert-name-here</h4>
+                        <p class="text"></p>
+                    </div>
+                </div>
+            </template>
+            <div id="messages">
+                
+            </div>
+            <div id="messageInput">
+                <form id="messageForm">
+                    <input type="text" id="userMessage" required>
+                    <input type="submit" id="submitButton" value="Send">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/LoggedIn.js" type="module"></script>
+    <script>
+        const messages = document.getElementById("messages");
+        messages.scrollTop = messages.scrollHeight;
+    </script>
+</body>
+
+</html>
