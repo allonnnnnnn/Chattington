@@ -7,6 +7,7 @@ const webSocket = require("ws");
 const userRepository = require("./repositories/userRepository");
 const friendshipRepository = require("./repositories/friendshipRepository");
 const channelRepository = require("./repositories/channelRepository");
+const { json } = require("stream/consumers");
 
 const app = express();
 const port = 8000;
@@ -32,18 +33,50 @@ const socketServer = new webSocket.Server({
     port: 8081
 });
 
+const messageRoutes = {
+    "ChangeChannel": function (data) {
+        channelRepository.getAChannel(data.userId, data.friendId, function (err, result) {
+            if (err) throw err;
+
+            clients[data.userId].channelId = result[0].id;
+        });
+    },
+
+    "sendMessage": function (data) {
+        //Make sure they are connected to a channel first bruh
+        channelRepository.getAChannelWithChannelId(clients[data.userId].channelId, function (err, result) {
+            if (err) throw err;
+
+            const friendId = (data.userId == result[0].user1Id) ? result[0].user2Id : result[0].user1Id;
+            //Check if the socket is also on the same channelId, if not, just don't send the message but a notification instead
+            const friendSocket = clients[friendId];
+            if (friendSocket) {
+                friendSocket.send(JSON.stringify({ "type": "incomingMessage", "message": data.message, "name": clients[data.userId].username }));
+            }
+
+            clients[data.userId].send(JSON.stringify({ "type": "successfulSentMessage", "message": data.message, "name": clients[data.userId].username }))
+        });
+    }
+}
+
 socketServer.on("connection", socketHandler);
 function socketHandler(socket) {
     let hasinitalMessageSent = false;
     socket.on("message", function (data) {
         data = JSON.parse(data.toString());
+        data.userId = socket.userId;
+
         if (!hasinitalMessageSent) {
             hasinitalMessageSent = true
 
+            socket.channelId = null;
+            socket.username = data.name
             socket.userId = data.id;
             clients[socket.userId] = socket;
             return;
         }
+
+        messageRoutes[data.type](data);
     });
 }
 
@@ -57,7 +90,10 @@ app.delete("/deleteFriendship", function (req, res) {
             throw err;
         }
 
-        clients[req.body.id].send(JSON.stringify({ "type": "UpdateChatrooms" }));
+        if (clients[req.body.id]) {
+            clients[req.body.id].send(JSON.stringify({ "type": "UpdateChannels" }));
+        }
+
         res.send();
     });
 });
@@ -108,8 +144,10 @@ app.post("/addFriend", function (req, res) {
                 return;
             }
 
-            clients[userResult[0].id].send(JSON.stringify({ "type": "UpdateChatrooms" }));
-            channelRepository.createChannel(req.session.userId, userResult[0].id, (err) => {if (err) throw err;});
+            if (clients[userResult[0].id]) {
+                clients[userResult[0].id].send(JSON.stringify({ "type": "UpdateChannels" }));
+            }
+            channelRepository.createChannel(req.session.userId, userResult[0].id, (err) => { if (err) throw err; });
 
             res.send({ 'status': 'success', 'message': 'Added friend' });
         });

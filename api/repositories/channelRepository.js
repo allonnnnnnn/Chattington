@@ -31,6 +31,14 @@ module.exports = {
             [user1Id, user2Id],
             callback
         );
+    },
+
+    getAChannelWithChannelId: function(channelId, callback) {
+        connection.query(
+            "SELECT * FROM channel WHERE id=?",
+            [channelId],
+            callback
+        );
     }
 }
 
