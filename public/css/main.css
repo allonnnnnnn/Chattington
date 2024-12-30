@@ -126,7 +126,6 @@
         flex-direction: column-reverse;
         padding: 10px 30px;
         overflow-y: scroll;
-        background-color: blueviolet;
     }
 
     .userMessage, .friendMessage {
@@ -153,7 +152,6 @@
         grid-column: span 12;
         grid-row: span 2;
         padding: 20px;
-        background-color: darksalmon;
     }
 
     #messageInput form {

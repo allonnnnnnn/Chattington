@@ -7,7 +7,7 @@ function ajaxGET(url, callback) {
             return;
         }
 
-        callback(this.responseText);
+        if (callback) callback(this.responseText);
     };
 
     xhr.open("GET", url)

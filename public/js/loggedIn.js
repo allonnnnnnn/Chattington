@@ -1,46 +1,74 @@
 import { ajaxGET, ajaxPOST, ajaxDELETE } from "/js/ajaxRequests.js";
 
+const socket = new WebSocket("ws://localhost:8081");
+
 function onLoggedIn() {
-    ajaxGET("/getUser", function(result) {
+    ajaxGET("/getUser", function (result) {
         result = JSON.parse(result)[0];
         document.getElementById("username-here").innerText = result.name;
     });
 
     connectToSocket();
-    loadChatrooms();
+    loadChannels();
 }
 onLoggedIn()
 
 function connectToSocket() {
-    const socket = new WebSocket("ws://localhost:8081");
-    
     //Initializes the socket with an Id
-    socket.addEventListener("open", function(event) {
-        ajaxGET("/getUser", function(result) {
+    socket.addEventListener("open", function (event) {
+        ajaxGET("/getUser", function (result) {
             result = JSON.parse(result);
-            socket.send(JSON.stringify({"id": result[0].id}));
+            socket.userId = result[0].id;
+            socket.send(JSON.stringify({ "id": result[0].id, "name": result[0].name }));
         });
     });
 
-    socket.addEventListener("message", routeMessages);
+    socket.addEventListener("message", routeSocketMessages);
 
-    socket.addEventListener("close", function() {
+    socket.addEventListener("close", function () {
         //idk do something
     });
 }
 
-function routeMessages(event) {
+function routeSocketMessages(event) {
     const data = JSON.parse(event.data);
-    messageRoutes[data.type](data);
+    socketMessageRoutes[data.type](data);
 }
 
-const messageRoutes = {
-    "UpdateChatrooms": function(data) {
-        loadChatrooms();
+function loadMessage(templateElement, data) {
+    const messageTemplate = templateElement.content.cloneNode(true);
+    const fragment = document.createDocumentFragment();
+    const messages = document.getElementById("messages");
+
+    messageTemplate.querySelector(".text").innerText = data.message;
+    messageTemplate.querySelector(".name").innerText = data.name;
+
+    fragment.appendChild(messageTemplate);
+    document.getElementById("messages").insertBefore(fragment, messages.children[0]);
+}
+const socketMessageRoutes = {
+    "UpdateChannels": loadChannels,
+    //Update the user's screen to show the message THEY sent when it went through
+    "successfulSentMessage": function (data) {
+        loadMessage(document.getElementById("userMessageTemplate"), data);
+    },
+    "incomingMessage": function (data) {
+        loadMessage(document.getElementById("friendMessageTemplate"), data);
+    },
+    "incomingMessageHistory": function(data) {
+        document.getElementById("messages").innerHTML = "";
+
+        data["messages"].forEach(message => {
+            if (socket.userId == message.userId) {
+                loadMessage(document.getElementById("userMessageTemplate"), message);
+            } else{
+                loadMessage(document.getElementById("friendMessageTemplate"), message);
+            }
+        });
     }
 }
 
-function loadChatrooms() {
+function loadChannels() {
     const channelContainer = document.getElementById("channels");
     for (let i = channelContainer.children.length - 1; i >= 2; i--) {
         channelContainer.children[i].remove();
@@ -64,11 +92,11 @@ function loadChatrooms() {
 }
 
 function onUnfriend(deletingUserId) {
-    ajaxDELETE("/deleteFriendship", JSON.stringify({ 'id': deletingUserId }), loadChatrooms);
+    ajaxDELETE("/deleteFriendship", JSON.stringify({ 'id': deletingUserId }), loadChannels);
 }
 
 function changeChatroom(friendId) {
-    
+    socket.send(JSON.stringify({ "type": "ChangeChannel", "friendId": friendId }));
 }
 
 document.getElementById("logoutButton").addEventListener("click", function () {
@@ -99,7 +127,7 @@ popup.querySelector("form").addEventListener("submit", function (event) {
         messageElement.style["color"] = "green";
         messageElement.innerText = response.message;
 
-        loadChatrooms();
+        loadChannels();
     });
 });
 
@@ -115,7 +143,7 @@ document.getElementById("messageForm").addEventListener("submit", function (even
     const message = document.getElementById("userMessage").value;
     document.getElementById("userMessage").value = "";
 
-    //TODO: send the message to the server to process with the web socket :)
+    socket.send(JSON.stringify({ "type": "sendMessage", "message": message }));
 });
 
 
