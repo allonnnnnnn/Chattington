@@ -7,7 +7,7 @@ const webSocket = require("ws");
 const userRepository = require("./repositories/userRepository");
 const friendshipRepository = require("./repositories/friendshipRepository");
 const channelRepository = require("./repositories/channelRepository");
-const { json } = require("stream/consumers");
+const messageRepository = require("./repositories/messageRepository");
 
 const app = express();
 const port = 8000;
@@ -38,21 +38,39 @@ const messageRoutes = {
         channelRepository.getAChannel(data.userId, data.friendId, function (err, result) {
             if (err) throw err;
 
+            //Trying to change to the same channel
+            if (clients[data.userId].channelId == result[0].id) return;
+
             clients[data.userId].channelId = result[0].id;
+
+            messageRepository.findByChannelId(clients[data.userId].channelId, function(messagesErr, messagesResult) {
+                if (messagesErr) throw messagesErr;
+
+                clients[data.userId].send(JSON.stringify({"type": "incomingMessageHistory", "messages": messagesResult}));
+            });
         });
     },
 
     "sendMessage": function (data) {
+        if (!clients[data.userId].channelId) return;
+
         //Make sure they are connected to a channel first bruh
         channelRepository.getAChannelWithChannelId(clients[data.userId].channelId, function (err, result) {
             if (err) throw err;
 
             const friendId = (data.userId == result[0].user1Id) ? result[0].user2Id : result[0].user1Id;
+
             //Check if the socket is also on the same channelId, if not, just don't send the message but a notification instead
             const friendSocket = clients[friendId];
-            if (friendSocket) {
+            if (friendSocket && clients[data.userId].channelId == friendSocket.channelId) {
                 friendSocket.send(JSON.stringify({ "type": "incomingMessage", "message": data.message, "name": clients[data.userId].username }));
             }
+
+            messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, null, function(err) {
+                if (err) {
+                    throw err;
+                }
+            });
 
             clients[data.userId].send(JSON.stringify({ "type": "successfulSentMessage", "message": data.message, "name": clients[data.userId].username }))
         });
@@ -98,7 +116,18 @@ app.delete("/deleteFriendship", function (req, res) {
     });
 });
 
-app.post("/login", function (req, res) {
+app.post("/login", loginsInUser);
+
+app.post("/createNewAccount", function(req, res) {
+    userRepository.createUser(req.body.email, req.body.name, req.body.password, function(err, result) {
+        //Most likely this err will result from an already created user
+        if (err) throw err;
+
+        loginsInUser(req, res);
+    });
+});
+
+function loginsInUser(req, res) {
     userRepository.findByEmailAndPassword(req.body.email, req.body.password, function (err, result) {
         if (err) {
             res.send({ "status": "failed", "message": "Something happened. Please try again" });
@@ -117,7 +146,7 @@ app.post("/login", function (req, res) {
 
         res.send({ "status": "success", "message": "Found account" });
     });
-});
+}
 
 app.post("/addFriend", function (req, res) {
     const friendEmail = req.body.email;

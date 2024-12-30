@@ -1,11 +1,4 @@
-const mysql = require("mysql2");
-
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "chattington",
-});
+const connection = require("./database.js");
 
 module.exports = {
     createRelationship: function (user1Id, user2Id, callback) {
@@ -31,17 +24,9 @@ module.exports = {
 
     deleteByUserId: function (userId, deletingUserId, callback) {
         connection.query(
-            "DELETE FROM channel WHERE user1Id=? AND user2Id=? OR user1Id=? AND user2Id=?",
+            "DELETE FROM friendship WHERE user1Id=? AND user2Id=? OR user1Id=? AND user2Id=?",
             [deletingUserId, userId, userId, deletingUserId],
-            function(err) {
-                if (err) throw err;
-
-                connection.query(
-                    "DELETE FROM friendship WHERE user1Id=? AND user2Id=? OR user1Id=? AND user2Id=?",
-                    [deletingUserId, userId, userId, deletingUserId],
-                    (err, result) => callback(err, result)
-                );
-            }
+            (err, result) => callback(err, result)
         );
     }
 }

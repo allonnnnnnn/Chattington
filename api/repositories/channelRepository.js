@@ -1,11 +1,4 @@
-const mysql = require("mysql2");
-
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "chattington",
-});
+const connection = require("./database.js");
 
 module.exports = {
     createChannel: function(user1Id, user2Id, callback) {
@@ -20,7 +13,6 @@ module.exports = {
         );
     },
 
-    
     getAChannel: function(user1Id, user2Id, callback) {
         let copy = user1Id;
         user1Id = Math.min(user1Id, user2Id);

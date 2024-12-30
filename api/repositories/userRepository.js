@@ -1,20 +1,21 @@
-const mysql = require("mysql2");
-
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "chattington",
-});
+const connection = require("./database.js");
 
 module.exports = {
+    createUser: function(email, name, password, callback) {
+        connection.query(
+            "INSERT INTO user(email, name, password) VALUES (?, ?, ?)",
+            [email, name, password],
+            callback
+        )
+    },
+
     findByIds : function(ids, callback) {
         const questionMarks = ids.map(() => "?").join(",");
 
         connection.query(
             `SELECT * FROM user WHERE id IN (${questionMarks})`,
             ids,
-            (err, result) => callback(err, result)
+            callback
         )
     },
 
@@ -22,7 +23,7 @@ module.exports = {
         connection.query(
             "SELECT * FROM user WHERE email=?",
             [email],
-            (err, result) => callback(err, result)
+            callback
         )
     },
 
@@ -30,7 +31,7 @@ module.exports = {
         connection.query(
             "SELECT id, email, name FROM user WHERE email=? AND password=?",
             [email, password],
-            (err, result) => callback(err, result)
+            callback
         );
     }
 
