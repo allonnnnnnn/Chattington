@@ -14,10 +14,10 @@ const port = 8000;
 const secret = crypto.randomBytes(64).toString("hex");
 const clients = {};
 
-app.use("/images", express.static("../public/images"));
-app.use("/css", express.static("../public/css"));
-app.use("/html", express.static("../public/html"));
-app.use("/js", express.static("../public/js"));
+app.use("/images", express.static("./public/images"));
+app.use("/css", express.static("./public/css"));
+app.use("/html", express.static("./public/html"));
+app.use("/js", express.static("./public/js"));
 app.use(express.json());
 
 app.use(session(
@@ -240,19 +240,19 @@ app.get("/main", function (req, res) {
         return;
     }
 
-    const file = fs.readFileSync("../public/html/main.html", "utf8");
+    const file = fs.readFileSync("./public/html/main.html", "utf8");
 
     res.send(file);
 });
 
 app.get("/signup", function (req, res) {
-    const file = fs.readFileSync("../public/html/signup.html", "utf8");
+    const file = fs.readFileSync("./public/html/signup.html", "utf8");
 
     res.send(file);
 });
 
 app.get("/", function (req, res) {
-    const file = fs.readFileSync("../public/html/index.html", "utf8");
+    const file = fs.readFileSync("./public/html/index.html", "utf8");
 
     res.send(file);
 });
