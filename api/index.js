@@ -16,7 +16,7 @@ const secret = crypto.randomBytes(64).toString("hex");
 const clients = {};
 
 const httpServer = http.createServer(app);
-const socketServer = new webSocket.Server({"server": httpServer });
+const socketServer = new webSocket.Server({ server: httpServer });
 
 app.use("/images", express.static("./public/images"));
 app.use("/css", express.static("./public/css"));
