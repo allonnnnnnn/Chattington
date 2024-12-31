@@ -21,12 +21,12 @@ function connectToSocket() {
             socket.userId = result[0].id;
             socket.send(JSON.stringify({ "id": result[0].id, "name": result[0].name }));
         });
-    });
 
-    socket.addEventListener("message", routeSocketMessages);
+        socket.addEventListener("message", routeSocketMessages);
 
-    socket.addEventListener("close", function () {
-        //idk do something
+        socket.addEventListener("close", function () {
+            //idk do something
+        });
     });
 }
 
@@ -55,13 +55,13 @@ const socketMessageRoutes = {
     "incomingMessage": function (data) {
         loadMessage(document.getElementById("friendMessageTemplate"), data);
     },
-    "incomingMessageHistory": function(data) {
+    "incomingMessageHistory": function (data) {
         document.getElementById("messages").innerHTML = "";
 
         data["messages"].forEach(message => {
             if (socket.userId == message.userId) {
                 loadMessage(document.getElementById("userMessageTemplate"), message);
-            } else{
+            } else {
                 loadMessage(document.getElementById("friendMessageTemplate"), message);
             }
         });
