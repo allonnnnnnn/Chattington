@@ -30,7 +30,6 @@ app.use(session(
 ));
 
 const socketServer = new webSocket.Server({
-    host: "chattington.onrender.com",
     port: 8081
 });
 

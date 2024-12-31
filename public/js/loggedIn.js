@@ -1,6 +1,6 @@
 import { ajaxGET, ajaxPOST, ajaxDELETE } from "/js/ajaxRequests.js";
 
-const socket = new WebSocket("ws://localhost:8081");
+const socket = new WebSocket("ws://chattington.onrender.com:8081");
 
 function onLoggedIn() {
     ajaxGET("/getUser", function (result) {
