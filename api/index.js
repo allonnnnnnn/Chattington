@@ -262,8 +262,20 @@ app.listen(port, function () {
     console.log("Running on port: " + port);
 });
 
+socketServer.addListener("listening", function() {
+    console.log("fucka youog");
+});
+socketServer.addListener("connection", function() {
+    console.log("fucka youog");
+})
+
 httpServer.listen(8081, function () {
-    console.log("Websocket and http server is launched on 8081")
+    socketServer.addListener("listening", function() {
+        console.log("fucka you");
+    });
+    socketServer.addListener("connection", function() {
+        console.log("fucka you");
+    })
 });
 
 
