@@ -5,7 +5,7 @@ require("dotenv").config();
 const connection = mysql.createConnection({
     host: "sql3.freemysqlhosting.net",
     user: "sql3754972",
-    password: process.env.DB_PASSWORD,
+    password: "aALgMeZVxi",
     database: "sql3754972"
 });
 
