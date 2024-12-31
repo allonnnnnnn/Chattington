@@ -265,17 +265,12 @@ app.listen(port, function () {
 socketServer.addListener("listening", function() {
     console.log("fucka youoggrgsdfa");
 });
-socketServer.addListener("connection", function() {
+socketServer.on("listening", function() {
     console.log("fucka youog");
 })
 
 httpServer.listen(8081, function () {
-    socketServer.addListener("listening", function() {
-        console.log("fucka you");
-    });
-    socketServer.addListener("connection", function() {
-        console.log("fucka you");
-    })
+    console.log("http server connected on port 8081");
 });
 
 
