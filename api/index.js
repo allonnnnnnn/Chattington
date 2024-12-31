@@ -261,7 +261,7 @@ app.listen(port, function () {
     console.log("Running on port: " + port);
 });
 
-socketServer.on("connection", socketHandler);
+socketServer.addListener("connection", socketHandler);
 
 httpServer.listen(8081, function () {
     console.log("Connecting http server");
