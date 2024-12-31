@@ -3,6 +3,7 @@ const session = require("express-session");
 const fs = require("fs");
 const crypto = require("crypto");
 const webSocket = require("ws");
+const http = require("http");
 
 const userRepository = require("./repositories/userRepository");
 const friendshipRepository = require("./repositories/friendshipRepository");
@@ -13,6 +14,9 @@ const app = express();
 const port = 8000;
 const secret = crypto.randomBytes(64).toString("hex");
 const clients = {};
+
+const httpServer = http.createServer(app);
+const socketServer = new webSocket.Server({"server": httpServer });
 
 app.use("/images", express.static("./public/images"));
 app.use("/css", express.static("./public/css"));
@@ -29,10 +33,6 @@ app.use(session(
     }
 ));
 
-const socketServer = new webSocket.Server({
-    port: 8081
-});
-
 const messageRoutes = {
     "ChangeChannel": function (data) {
         channelRepository.getAChannel(data.userId, data.friendId, function (err, result) {
@@ -43,10 +43,10 @@ const messageRoutes = {
 
             clients[data.userId].channelId = result[0].id;
 
-            messageRepository.findByChannelId(clients[data.userId].channelId, function(messagesErr, messagesResult) {
+            messageRepository.findByChannelId(clients[data.userId].channelId, function (messagesErr, messagesResult) {
                 if (messagesErr) throw messagesErr;
 
-                clients[data.userId].send(JSON.stringify({"type": "incomingMessageHistory", "messages": messagesResult}));
+                clients[data.userId].send(JSON.stringify({ "type": "incomingMessageHistory", "messages": messagesResult }));
             });
         });
     },
@@ -66,7 +66,7 @@ const messageRoutes = {
                 friendSocket.send(JSON.stringify({ "type": "incomingMessage", "message": data.message, "name": clients[data.userId].username }));
             }
 
-            messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, null, function(err) {
+            messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, null, function (err) {
                 if (err) {
                     throw err;
                 }
@@ -79,6 +79,7 @@ const messageRoutes = {
 
 socketServer.on("connection", socketHandler);
 function socketHandler(socket) {
+    console.log("WTF");
     let hasinitalMessageSent = false;
     socket.on("message", function (data) {
         data = JSON.parse(data.toString());
@@ -118,8 +119,8 @@ app.delete("/deleteFriendship", function (req, res) {
 
 app.post("/login", loginsInUser);
 
-app.post("/createNewAccount", function(req, res) {
-    userRepository.createUser(req.body.email, req.body.name, req.body.password, function(err, result) {
+app.post("/createNewAccount", function (req, res) {
+    userRepository.createUser(req.body.email, req.body.name, req.body.password, function (err, result) {
         //Most likely this err will result from an already created user
         if (err) throw err;
 
@@ -259,6 +260,10 @@ app.get("/", function (req, res) {
 
 app.listen(port, function () {
     console.log("Running on port: " + port);
+});
+
+httpServer.listen(8081, function () {
+    console.log("Websocket and http server is launched on 8081")
 });
 
 

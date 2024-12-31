@@ -16,6 +16,7 @@ onLoggedIn()
 function connectToSocket() {
     //Initializes the socket with an Id
     socket.addEventListener("open", function (event) {
+        console.log("opned");
         ajaxGET("/getUser", function (result) {
             result = JSON.parse(result);
             socket.userId = result[0].id;
@@ -25,6 +26,7 @@ function connectToSocket() {
         socket.addEventListener("message", routeSocketMessages);
 
         socket.addEventListener("close", function () {
+            console.log("closed websocket");
             //idk do something
         });
     });
@@ -96,9 +98,7 @@ function onUnfriend(deletingUserId) {
 }
 
 function changeChatroom(friendId) {
-    socket.addEventListener("open", function (event) {
-        socket.send(JSON.stringify({ "type": "ChangeChannel", "friendId": friendId }));
-    });
+    socket.send(JSON.stringify({ "type": "ChangeChannel", "friendId": friendId }));
 }
 
 document.getElementById("logoutButton").addEventListener("click", function () {
@@ -145,9 +145,7 @@ document.getElementById("messageForm").addEventListener("submit", function (even
     const message = document.getElementById("userMessage").value;
     document.getElementById("userMessage").value = "";
 
-    socket.addEventListener("open", function () {
-        socket.send(JSON.stringify({ "type": "sendMessage", "message": message }));
-    });
+    socket.send(JSON.stringify({ "type": "sendMessage", "message": message }));
 });
 
 
