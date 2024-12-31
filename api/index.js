@@ -77,6 +77,7 @@ const messageRoutes = {
     }
 }
 
+socketServer.on("connection", socketHandler);
 function socketHandler(socket) {
     console.log("WTF");
     let hasinitalMessageSent = false;
@@ -261,10 +262,20 @@ app.listen(port, function () {
     console.log("Running on port: " + port);
 });
 
-socketServer.addListener("connection", socketHandler);
+socketServer.addListener("listening", function() {
+    console.log("fucka youog");
+});
+socketServer.addListener("connection", function() {
+    console.log("fucka youog");
+})
 
 httpServer.listen(8081, function () {
-    console.log("Connecting http server");
+    socketServer.addListener("listening", function() {
+        console.log("fucka you");
+    });
+    socketServer.addListener("connection", function() {
+        console.log("fucka you");
+    })
 });
 
 
