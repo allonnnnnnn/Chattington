@@ -263,7 +263,7 @@ app.listen(port, function () {
 });
 
 socketServer.addListener("listening", function() {
-    console.log("fucka youog");
+    console.log("fucka youoggrgsdfa");
 });
 socketServer.addListener("connection", function() {
     console.log("fucka youog");
