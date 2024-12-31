@@ -3,7 +3,7 @@ const fs = require("fs");
 const ca = fs.readFileSync("./ca.pem");
 
 require("dotenv").config();
-
+console.log(ca);
 const connection = mysql.createConnection({
     host: "mysql-2e67ef58-chattington.l.aivencloud.com",
     user: "avnadmin",
