@@ -9,7 +9,6 @@ function onLoggedIn() {
     });
 
     connectToSocket();
-    loadChannels();
 }
 onLoggedIn()
 
@@ -27,6 +26,8 @@ function connectToSocket() {
         socket.addEventListener("close", function () {
             //idk do something
         });
+
+        loadChannels();
     });
 }
 
