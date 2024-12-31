@@ -3,7 +3,6 @@ const session = require("express-session");
 const fs = require("fs");
 const crypto = require("crypto");
 const webSocket = require("ws");
-const http = require("http");
 
 const userRepository = require("./repositories/userRepository");
 const friendshipRepository = require("./repositories/friendshipRepository");
@@ -15,8 +14,7 @@ const port = 8000;
 const secret = crypto.randomBytes(64).toString("hex");
 const clients = {};
 
-const httpServer = http.createServer(app);
-const socketServer = new webSocket.Server({ server: httpServer });
+const socketServer = new webSocket.Server({ port: 3000 });
 
 app.use("/images", express.static("./public/images"));
 app.use("/css", express.static("./public/css"));
@@ -260,17 +258,6 @@ app.get("/", function (req, res) {
 
 app.listen(port, function () {
     console.log("Running on port: " + port);
-});
-
-socketServer.addListener("listening", function() {
-    console.log("fucka youoggrgsdfa");
-});
-socketServer.on("listening", function() {
-    console.log("fucka youog");
-})
-
-httpServer.listen(8081, function () {
-    console.log("http server connected on port 8081");
 });
 
 
