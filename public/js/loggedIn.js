@@ -9,6 +9,7 @@ function onLoggedIn() {
     });
 
     connectToSocket();
+    loadChannels();
 }
 onLoggedIn()
 
@@ -26,8 +27,6 @@ function connectToSocket() {
         socket.addEventListener("close", function () {
             //idk do something
         });
-
-        loadChannels();
     });
 }
 
@@ -97,7 +96,9 @@ function onUnfriend(deletingUserId) {
 }
 
 function changeChatroom(friendId) {
-    socket.send(JSON.stringify({ "type": "ChangeChannel", "friendId": friendId }));
+    socket.addEventListener("open", function (event) {
+        socket.send(JSON.stringify({ "type": "ChangeChannel", "friendId": friendId }));
+    });
 }
 
 document.getElementById("logoutButton").addEventListener("click", function () {
@@ -144,7 +145,9 @@ document.getElementById("messageForm").addEventListener("submit", function (even
     const message = document.getElementById("userMessage").value;
     document.getElementById("userMessage").value = "";
 
-    socket.send(JSON.stringify({ "type": "sendMessage", "message": message }));
+    socket.addEventListener("open", function () {
+        socket.send(JSON.stringify({ "type": "sendMessage", "message": message }));
+    });
 });
 
 
