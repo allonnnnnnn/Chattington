@@ -1,4 +1,7 @@
 const mysql = require("mysql2");
+const fs = require("fs");
+const ca = fs.readFileSync("./ca.pem");
+
 require("dotenv").config();
 
 const connection = mysql.createConnection({
@@ -6,7 +9,10 @@ const connection = mysql.createConnection({
     user: "avnadmin",
     password: process.env.DB_PASSWORD,
     database: "defaultdb",
-    port: 15569
+    port: 15569,
+    ssl: {
+        ca: ca
+    }
 });
 
 module.exports = connection;

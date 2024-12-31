@@ -1,3 +1,4 @@
 node_modules
 DDLCommands.sql
 .env
+ca.pem
