@@ -16,6 +16,8 @@ const clients = {};
 
 const socketServer = new webSocket.Server({ port: 443 });
 
+console.log(process.env.PORT);
+
 app.use("/images", express.static("./public/images"));
 app.use("/css", express.static("./public/css"));
 app.use("/html", express.static("./public/html"));
