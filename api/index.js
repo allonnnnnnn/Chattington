@@ -14,9 +14,7 @@ const port = 8000;
 const secret = crypto.randomBytes(64).toString("hex");
 const clients = {};
 
-const socketServer = new webSocket.Server({ port: 443 });
-
-console.log(process.env.PORT);
+const socketServer = new webSocket.Server({ port: process.env.PORT });
 
 app.use("/images", express.static("./public/images"));
 app.use("/css", express.static("./public/css"));
