@@ -258,7 +258,9 @@ app.get("/", function (req, res) {
     res.send(file);
 });
 
-server.listen(process.env.PORT);
+server.listen(process.env.PORT, function() {
+    console.log("Server on port: " + process.env.PORT);
+});
 
 app.listen(port, function () {
     console.log("Running on port: " + port);
