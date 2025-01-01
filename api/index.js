@@ -18,7 +18,7 @@ const clients = {};
 const httpsServer = https.createServer(app);
 const socketServer = new webSocket.Server({ server: httpsServer });
 
-httpsServer.listen(8001, function() {
+httpsServer.listen(process.env.PORT, function() {
     console.log("connected yay");
 });
 
