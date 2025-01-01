@@ -24,11 +24,11 @@ function connectToSocket() {
         });
 
         socket.addEventListener("message", routeSocketMessages);
+    });
 
-        socket.addEventListener("close", function () {
-            console.log("closed websocket");
-            //idk do something
-        });
+    socket.addEventListener("close", function (event) {
+        console.log(event.code + " " + event.message);
+        //idk do something
     });
 }
 
