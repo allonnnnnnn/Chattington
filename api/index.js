@@ -81,7 +81,6 @@ const messageRoutes = {
 
 socketServer.on("connection", socketHandler);
 function socketHandler(socket) {
-    console.log("WTF");
     let hasinitalMessageSent = false;
     socket.on("message", function (data) {
         data = JSON.parse(data.toString());

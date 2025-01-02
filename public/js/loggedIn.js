@@ -1,6 +1,7 @@
 import { ajaxGET, ajaxPOST, ajaxDELETE } from "/js/ajaxRequests.js";
 
-const socket = new WebSocket("wss://chattington-production.up.railway.app");
+// const socket = new WebSocket("wss://chattington-production.up.railway.app");
+const socket = new WebSocket("ws://localhost:8000");
 
 function onLoggedIn() {
     ajaxGET("/getUser", function (result) {
@@ -42,8 +43,11 @@ function loadMessage(templateElement, data) {
     const fragment = document.createDocumentFragment();
     const messages = document.getElementById("messages");
 
+    const date = (new Date(data.date)).toLocaleString();
+    
     messageTemplate.querySelector(".text").innerText = data.message;
     messageTemplate.querySelector(".name").innerText = data.name;
+    messageTemplate.querySelector(".messageDate").innerText = date;
 
     fragment.appendChild(messageTemplate);
     document.getElementById("messages").insertBefore(fragment, messages.children[0]);

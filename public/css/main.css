@@ -140,6 +140,12 @@
         text-align: left;
     }
 
+    .messageDate {
+        color: gray;
+        font-weight: normal;
+        font-size: 10pt;
+    }
+
     .userMessage>.profilePicture>img {
         margin: auto;
     }
