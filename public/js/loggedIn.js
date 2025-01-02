@@ -1,7 +1,7 @@
 import { ajaxGET, ajaxPOST, ajaxDELETE } from "/js/ajaxRequests.js";
 
-// const socket = new WebSocket("wss://chattington-production.up.railway.app");
-const socket = new WebSocket("ws://localhost:8000");
+const socket = new WebSocket("wss://chattington-production.up.railway.app");
+// const socket = new WebSocket("ws://localhost:8000");
 
 function onLoggedIn() {
     ajaxGET("/getUser", function (result) {
