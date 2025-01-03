@@ -42,7 +42,7 @@ function loadMessage(templateElement, data) {
     const messageTemplate = templateElement.content.cloneNode(true);
     const fragment = document.createDocumentFragment();
     const messages = document.getElementById("messages");
-
+    
     const date = (new Date(data.date)).toLocaleString();
     
     messageTemplate.querySelector(".text").innerText = data.message;
@@ -88,8 +88,8 @@ function loadChannels() {
             const channelTemplate = document.getElementById("channelTemplate").content.cloneNode(true);
 
             channelTemplate.querySelector(".friendName").innerText = user.name;
-            channelTemplate.querySelector("#unfriendButton").addEventListener("click", () => onUnfriend(user.id));
-            channelTemplate.querySelector("div").addEventListener("click", () => changeChatroom(user.id));
+            channelTemplate.querySelector(".unfriendButton").addEventListener("click", () => onUnfriend(user.id));
+            channelTemplate.querySelector(".clickableProfile").addEventListener("click", () => changeChatroom(user.id));
 
             fragment.appendChild(channelTemplate);
             document.getElementById("channels").appendChild(fragment);
@@ -98,7 +98,16 @@ function loadChannels() {
 }
 
 function onUnfriend(deletingUserId) {
-    ajaxDELETE("/deleteFriendship", JSON.stringify({ 'id': deletingUserId }), loadChannels);
+    ajaxDELETE("/deleteFriendship", JSON.stringify({ 'id': deletingUserId }), function() { 
+        loadChannels();
+
+        ajaxGET("/getChannelId", function(result) {
+            result = JSON.parse(result);
+            if (!result.channelId) {
+                document.getElementById("messages").innerHTML = "<h2>Please select a chat to start chatting</h2>";
+            }
+        });
+    });
 }
 
 function changeChatroom(friendId) {

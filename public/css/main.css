@@ -73,6 +73,11 @@
         overflow-y: scroll;
     }
 
+    .clickableProfile {
+        display: flex;
+        flex-grow: 1;
+    }
+
     #addUser {
         display: block;
         margin-left: auto;
@@ -93,6 +98,12 @@
 
     .friendName {
         margin: auto;
+        flex-grow: 1;
+        text-align: center;
+    }
+
+    .unfriendButton {
+        margin: auto 0 !important;
     }
 
     .profilePicture {
@@ -150,7 +161,7 @@
         margin: auto;
     }
 
-    .userMessage>div *, .friendMessage>div *  {
+    .userMessage>div *, .friendMessage>div * {
         margin: 0;
     }
 
@@ -158,6 +169,7 @@
         grid-column: span 12;
         grid-row: span 2;
         padding: 20px;
+        border-top: 3px solid black;
     }
 
     #messageInput form {

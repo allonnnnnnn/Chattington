@@ -39,9 +39,9 @@ const messageRoutes = {
     "ChangeChannel": function (data) {
         channelRepository.getAChannel(data.userId, data.friendId, function (err, result) {
             if (err) throw err;
-
+            console.log("CHnage channel");
             //Trying to change to the same channel
-            if (clients[data.userId].channelId == result[0].id) return;
+            if (result.length == 0 || clients[data.userId].channelId == result[0].id) return;
 
             clients[data.userId].channelId = result[0].id;
 
@@ -105,16 +105,26 @@ socketServer.on("close", function (socket) {
 });
 
 app.delete("/deleteFriendship", function (req, res) {
-    friendshipRepository.deleteByUserId(req.session.userId, req.body.id, function (err, result) {
+    channelRepository.getAChannel(req.session.userId, req.body.id, function(err, result) {
         if (err) {
             throw err;
         }
-
-        if (clients[req.body.id]) {
-            clients[req.body.id].send(JSON.stringify({ "type": "UpdateChannels" }));
+        
+        if (clients[req.session.userId].channelId == result[0].id) {
+            clients[req.session.userId].channelId = null;
         }
-
-        res.send();
+        
+        friendshipRepository.deleteByUserId(req.session.userId, req.body.id, function (err, result) {
+            if (err) {
+                throw err;
+            }
+            console.log(result);
+            if (clients[req.body.id]) {
+                clients[req.body.id].send(JSON.stringify({ "type": "UpdateChannels" }));
+            }
+    
+            res.send();
+        });
     });
 });
 
@@ -183,6 +193,10 @@ app.post("/addFriend", function (req, res) {
             res.send({ 'status': 'success', 'message': 'Added friend' });
         });
     });
+});
+
+app.get("/getChannelId", function(req, res) {
+    res.send({"channelId": clients[req.session.userId].channelId});
 });
 
 app.get("/getFriendships", function (req, res) {
