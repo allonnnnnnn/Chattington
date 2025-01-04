@@ -17,7 +17,6 @@ onLoggedIn()
 function connectToSocket() {
     //Initializes the socket with an Id
     socket.addEventListener("open", function (event) {
-        console.log("opned");
         ajaxGET("/getUser", function (result) {
             result = JSON.parse(result);
             socket.userId = result[0].id;
@@ -75,7 +74,7 @@ const socketMessageRoutes = {
 }
 
 function loadChannels() {
-    const channelContainer = document.getElementById("channels");
+    const channelContainer = document.getElementById("sideBarContent");
     for (let i = channelContainer.children.length - 1; i >= 2; i--) {
         channelContainer.children[i].remove();
     }
@@ -92,7 +91,7 @@ function loadChannels() {
             channelTemplate.querySelector(".clickableProfile").addEventListener("click", () => changeChatroom(user.id));
 
             fragment.appendChild(channelTemplate);
-            document.getElementById("channels").appendChild(fragment);
+            channelContainer.appendChild(fragment);
         });
     });
 }

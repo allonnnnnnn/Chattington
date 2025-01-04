@@ -39,7 +39,7 @@ const messageRoutes = {
     "ChangeChannel": function (data) {
         channelRepository.getAChannel(data.userId, data.friendId, function (err, result) {
             if (err) throw err;
-            console.log("CHnage channel");
+            
             //Trying to change to the same channel
             if (result.length == 0 || clients[data.userId].channelId == result[0].id) return;
 
@@ -61,20 +61,21 @@ const messageRoutes = {
             if (err) throw err;
 
             const friendId = (data.userId == result[0].user1Id) ? result[0].user2Id : result[0].user1Id;
-
+            const date = Date(Date.now()).toString();
+            
             //Check if the socket is also on the same channelId, if not, just don't send the message but a notification instead
             const friendSocket = clients[friendId];
             if (friendSocket && clients[data.userId].channelId == friendSocket.channelId) {
-                friendSocket.send(JSON.stringify({ "type": "incomingMessage", "message": data.message, "name": clients[data.userId].username }));
+                friendSocket.send(JSON.stringify({ "type": "incomingMessage", "message": data.message, "date": date, "name": clients[data.userId].username }));
             }
 
-            messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, null, function (err) {
+            messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, date, function (err) {
                 if (err) {
                     throw err;
                 }
             });
-
-            clients[data.userId].send(JSON.stringify({ "type": "successfulSentMessage", "message": data.message, "name": clients[data.userId].username }))
+            
+            clients[data.userId].send(JSON.stringify({ "type": "successfulSentMessage", "message": data.message, "date": date, "name": clients[data.userId].username }))
         });
     }
 }
@@ -118,7 +119,7 @@ app.delete("/deleteFriendship", function (req, res) {
             if (err) {
                 throw err;
             }
-            console.log(result);
+            
             if (clients[req.body.id]) {
                 clients[req.body.id].send(JSON.stringify({ "type": "UpdateChannels" }));
             }

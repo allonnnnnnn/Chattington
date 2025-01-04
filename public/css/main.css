@@ -1,3 +1,9 @@
+    * {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: normal;
+        color: rgb(204, 205, 205);
+    }
+
     body {
         margin: 0;
     }
@@ -15,7 +21,7 @@
         height: 250px;
         border-radius: 2.5%;
         border: 2px solid black;
-        background-color: white;
+        background-color: rgb(31, 31, 31);
         text-align: center;
     }
 
@@ -25,6 +31,7 @@
         width: 30px;
         height: 30px;
         right: 0;
+        filter: invert(80%);
     }
 
     #addFriendPopup h2 {
@@ -35,6 +42,16 @@
     #addFriendPopup form {
         height: 50px;
         margin: auto 0;
+    }
+
+    #addFriendPopup [type='email'] {
+        border-radius: 20px;
+        background-color: rgb(59, 59, 59);
+    }
+
+    #addFriendPopup [type='submit'] {
+        border-radius: 20px;
+        background-color: rgb(59, 59, 59);
     }
 
     #container {
@@ -50,13 +67,17 @@
         grid-row: 1;
         grid-column: span 12;
         gap: 5px;
-        padding: 5px;
+        padding: 5px 17px;
         align-items: center;
+        background-color: black;
         border: 2px solid black;
     }
 
     #header>h2 {
-        margin: auto;
+        margin: 0 auto;
+        font-weight: bolder;
+        font-style: italic;
+        font-size: 30pt;
     }
 
     #header>button {
@@ -65,17 +86,32 @@
         font-size: large;
     }
 
-    #channels {
+    #logoutButton {
+        background-color: rgb(59, 59, 59);
+        border: 0px;
+        border-radius: 15px;
+    }
+
+    #sideBar {
         grid-column: span 3;
         grid-row: span 12;
-        border: 2px solid black;
-        padding: 5px 15px;
-        overflow-y: scroll;
+        border-top: 2px solid rgb(74, 74, 74);
+        padding: 0px 15px;
+        overflow-y: auto;
+        background-color: rgb(31, 31, 31);
+    }
+
+    #sideBarContent {
+        color: rgb(204, 205, 205);
+        height: 98%;
+        padding: 5px;
+        border-radius: 5px;
     }
 
     .clickableProfile {
         display: flex;
         flex-grow: 1;
+        gap: 5px;
     }
 
     #addUser {
@@ -83,41 +119,42 @@
         margin-left: auto;
         height: 30px;
         width: 30px;
+        filter: invert(80%);
     }
 
-    #channels>div {
+    #sideBarContent>div {
         display: flex;
         margin: 10px 0;
-        border-top: 2px solid black;
-        border-bottom: 2px solid black;
+        border-radius: 15px;
+        padding: 0px 5px;
     }
 
-    #channels>div:hover {
-        background-color: rgb(237, 237, 237);
+    #sideBarContent>div:hover {
+        background-color: rgb(65, 65, 65);
     }
 
     .friendName {
         margin: auto;
         flex-grow: 1;
-        text-align: center;
+        text-overflow: clip;
     }
 
     .unfriendButton {
         margin: auto 0 !important;
+        filter: invert(80%);
     }
 
     .profilePicture {
         margin: 7.5px 0;
         border-radius: 50%;
-        height: 3vw;
-        width: 3vw;
-        border: 5px solid black;
+        height: 4.5vw;
+        width: 4.5vw;
         overflow: hidden;
     }
 
     .profilePicture img {
-        height: 3vw;
-        width: 3vw;
+        height: 4.5vw;
+        width: 4.5vw;
     }
 
     #chatroom {
@@ -126,7 +163,8 @@
         grid-template-columns: repeat(12, 1fr);
         grid-row: span 11;
         grid-column: span 9;
-        border: 2px solid black;
+        border: 2px solid rgb(74, 74, 74);
+        background-color: rgb(31, 31, 31);
     }
 
     #messages {
@@ -136,7 +174,8 @@
         gap: 5px;
         flex-direction: column-reverse;
         padding: 10px 30px;
-        overflow-y: scroll;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .userMessage, .friendMessage {
@@ -144,6 +183,10 @@
         justify-content: flex-end;
         gap: 5px;
         text-align: right;
+    }
+
+    .name {
+        font-weight: 1000;
     }
 
     .friendMessage {
@@ -161,6 +204,16 @@
         margin: auto;
     }
 
+    .userMessageText {
+        flex-grow: 1;
+        width: 2%;
+        word-wrap: break-word;
+    }
+
+    .userMessageText .text {
+        text-wrap: pretty;
+    }
+
     .userMessage>div *, .friendMessage>div * {
         margin: 0;
     }
@@ -169,7 +222,6 @@
         grid-column: span 12;
         grid-row: span 2;
         padding: 20px;
-        border-top: 3px solid black;
     }
 
     #messageInput form {
@@ -181,9 +233,24 @@
         font-size: 25pt;
         width: 90%;
         height: 95%;
+        border-top-left-radius: 35px;
+        border-bottom-left-radius: 35px;
+        border: 0px;
+        background-color: rgb(59, 59, 59);
     }
 
     #messageInput [type="submit"] {
         width: 8%;
-        height: 100%;
+        height: 98%;
+        border-top-right-radius: 35px;
+        border-bottom-right-radius: 35px;
+        border: 0px;
+        border-left: 2px solid rgb(31, 31, 31);
+        /* background-color: white; */
+        background-color: rgb(59, 59, 59);
+        background-image: url("/images/enterIcon.png");
+        background-size: 75px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-clip: border-box;
     }

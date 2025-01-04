@@ -1,9 +1,40 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    color: rgb(204, 205, 205);
+}
+
 body {
     height: 100vh;
+    margin: 0;
+    background-color: rgb(31, 31, 31);
 }
 
 h2 {
     text-align: center;
+}
+
+a {
+    margin-top: 20px;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    grid-row: 1;
+    grid-column: span 12;
+    gap: 5px;
+    padding: 5px 17px;
+    align-items: center;
+    background-color: black;
+    border: 2px solid black;
+}
+
+#header>h2 {
+    margin: 0 auto;
+    font-weight: bolder;
+    font-style: italic;
+    font-size: 30pt;
 }
 
 #signupWidget {
@@ -16,6 +47,8 @@ h2 {
 }
 
 #signupWidget>form {
+    background-color: rgb(53, 53, 53);
+    box-shadow: 8px 13px black;
     border: 2px solid black;
     border-radius: 5%;
     width: 90%;
@@ -25,17 +58,22 @@ h2 {
     margin-top: 15px;
 }
 
-#signupWidget>form label {
-    margin-bottom: 20px;
-}
-
-#signupWidget>form input {
-    /* margin-bottom: 6px;
+#signupWidget form>input {
+    margin-bottom: 6px;
     margin-top: 2px;
-    margin-left: 2px; */
-    padding: 3px 5px;
+    margin-left: 2px;
+    padding: 3.5px 5px;
+    border-radius: 20px;
+    background-color: rgb(41, 41, 41);
 }
 
-#signupWidget>form input[type="submit"] {
-    margin-top: 20px;
+#signupWidget form>input:not([type='submit']) {
+    border: 0px;
 }
+
+
+#signupWidget [type='submit'] {
+    border-radius: 20px;
+}
+
+

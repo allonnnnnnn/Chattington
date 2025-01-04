@@ -15,29 +15,31 @@
             <h2>Add a friend in the field below with their email</h2>
             <form>
                 <input type="email">
-                <input type="submit" name="">
+                <input type="submit" value="Friend" name="">
                 <p style="margin: 0; color: red;" id="addFriendMessage"></p>
             </form>
         </div>
         <div id="header">
-            <h2>ChattingTon</h2>
-            <h3>Hi, <span id="username-here"></span></h3>
+            <h3>Welcome, <span id="username-here"></span></h3>
+            <h2>CHATTINGTON</h2>
             <button id="logoutButton">Logout</button>
         </div>
-        <div id="channels">
-            <img src="/images/plusIcon.png" id="addUser" alt="">
-            <template id="channelTemplate">
-                <div>
-                    <div class="clickableProfile">
-                        <div class="profilePicture">
-                            <img src="/images/profilePictureTemplate.png" alt="profile picture">
+        <div id="sideBar">
+            <div id="sideBarContent">
+                <img src="/images/plusIcon.png" id="addUser" alt="">
+                <template id="channelTemplate">
+                    <div>
+                        <div class="clickableProfile">
+                            <div class="profilePicture">
+                                <img src="/images/profilePictureTemplate.png" alt="profile picture">
+                            </div>
+                            <h2 class="friendName">Username here</h2>
                         </div>
-                        <h2 class="friendName">Username here</h2>
+                        <img src="/images/exitIcon.png" class="unfriendButton" alt="" height="25px" width="25px"
+                            style="margin: auto;">
                     </div>
-                    <img src="/images/exitIcon.png" class="unfriendButton" alt="" height="25px" width="25px"
-                        style="margin: auto;">
-                </div>
-            </template>
+                </template>
+            </div>
         </div>
         <div id="chatroom">
             <template id="userMessageTemplate">
@@ -63,12 +65,12 @@
                 </div>
             </template>
             <div id="messages">
-                <h2>Please select a chat to start chatting</h2>
+                <h2 style="font-weight: bold;">Please select a chat to start chatting</h2>
             </div>
             <div id="messageInput">
                 <form id="messageForm">
                     <input type="text" id="userMessage" autocomplete="off" required>
-                    <input type="submit" id="submitButton" value="Send">
+                    <input type="submit" id="submitButton" value="">
                 </form>
             </div>
         </div>
