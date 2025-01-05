@@ -195,23 +195,62 @@
     }
 
     .messageDate {
+        position: relative;
         color: gray;
         font-weight: normal;
         font-size: 10pt;
+    }
+
+    .messageOptions {
+        width: 50px;
+        height: 20px;
+        position: absolute;
+        display: flex;
+        transform: translate(0px, -50px);
+        visibility: hidden;
+    }
+
+    .messageOptions>div {
+        height: 20px;
+        background-color: rgb(0, 0, 0);
+        border-radius: 20px;
+        padding: 5px;
+        font-weight: bold;
     }
 
     .userMessage>.profilePicture>img {
         margin: auto;
     }
 
-    .userMessageText {
+    .userMessageText, .friendMessageText {
         flex-grow: 1;
         width: 2%;
         word-wrap: break-word;
+        border-radius: 20px;
     }
 
-    .userMessageText .text {
+    .userMessageText .text, .friendMessageText .text  {
         text-wrap: pretty;
+    }
+
+    .editBox {
+        display: none;
+    }
+
+    .editBox [type='text'] {
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+        border-radius: 20px;
+        background-color:  rgb(41, 41, 41);
+    }
+
+    .userMessageText:hover, .friendMessageText:hover {
+        background-color: rgb(65, 65, 65);
+    }
+
+    .userMessageText:hover  .messageOptions {
+        visibility: visible;
     }
 
     .userMessage>div *, .friendMessage>div * {

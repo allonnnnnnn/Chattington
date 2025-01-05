@@ -1,4 +1,4 @@
-import { ajaxGET, ajaxPOST, ajaxDELETE } from "/js/ajaxRequests.js";
+import { ajaxGET, ajaxPOST, ajaxPUT, ajaxDELETE } from "/js/ajaxRequests.js";
 
 const socket = new WebSocket("wss://chattington-production.up.railway.app");
 // const socket = new WebSocket("ws://localhost:8000");
@@ -41,16 +41,57 @@ function loadMessage(templateElement, data) {
     const messageTemplate = templateElement.content.cloneNode(true);
     const fragment = document.createDocumentFragment();
     const messages = document.getElementById("messages");
-    
+
     const date = (new Date(data.date)).toLocaleString();
-    
+
     messageTemplate.querySelector(".text").innerText = data.message;
     messageTemplate.querySelector(".name").innerText = data.name;
     messageTemplate.querySelector(".messageDate").innerText = date;
 
     fragment.appendChild(messageTemplate);
     document.getElementById("messages").insertBefore(fragment, messages.children[0]);
+
+    const messageDOM = document.getElementById("messages").firstElementChild;
+    messageDOM.id = data.id;
+    if (messageDOM.querySelector(".messageOptions")) {
+        messageDOM.querySelector(".editMessage").addEventListener("click", () => onEditMessage(messageDOM, data));
+        messageDOM.querySelector(".deleteMessage").addEventListener("click", () => onDeleteMessage(messageDOM, data));
+    }
 }
+
+function onEditMessage(messageDOM, data) {
+    const editBox = messageDOM.querySelector(".editBox").cloneNode(true);
+    const text = messageDOM.querySelector(".text");
+    
+    messageDOM.querySelector(".editBox").replaceWith(editBox);
+
+    text.style.display = "none";
+    editBox.style.display = "block";
+    editBox.querySelector("input").focus();
+
+    editBox.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const value = editBox.querySelector("input").value;
+        ajaxPUT("/updateMessage", JSON.stringify({ "id": data.id, "channelId": data.channelId, "message": value }), function () {
+            text.style.display = "block";
+            text.innerText = value;
+            editBox.style.display = "none";
+        });
+
+        editBox.querySelector("input").value = "";
+    });
+
+    editBox.addEventListener("focusout", function () {
+        text.style.display = "block";
+        editBox.style.display = "none";
+    });
+}
+
+function onDeleteMessage(messageDOM, data) {
+
+}
+
 const socketMessageRoutes = {
     "UpdateChannels": loadChannels,
     //Update the user's screen to show the message THEY sent when it went through
@@ -62,7 +103,7 @@ const socketMessageRoutes = {
     },
     "incomingMessageHistory": function (data) {
         document.getElementById("messages").innerHTML = "";
-
+        console.log(data.messages);
         data["messages"].forEach(message => {
             if (socket.userId == message.userId) {
                 loadMessage(document.getElementById("userMessageTemplate"), message);
@@ -70,6 +111,18 @@ const socketMessageRoutes = {
                 loadMessage(document.getElementById("friendMessageTemplate"), message);
             }
         });
+    },
+    "updateMessage": function (data) {
+        const childElements = document.getElementById("messages").children;
+
+        for (let i = 0; i < document.getElementById("messages").children.length; i++) {
+            const element = childElements[i];
+
+            if (childElements[i].id == data.id) {
+                element.querySelector(".text").innerText = data.message;
+                break;
+            }
+        }
     }
 }
 
@@ -97,10 +150,10 @@ function loadChannels() {
 }
 
 function onUnfriend(deletingUserId) {
-    ajaxDELETE("/deleteFriendship", JSON.stringify({ 'id': deletingUserId }), function() { 
+    ajaxDELETE("/deleteFriendship", JSON.stringify({ 'id': deletingUserId }), function () {
         loadChannels();
 
-        ajaxGET("/getChannelId", function(result) {
+        ajaxGET("/getChannelId", function (result) {
             result = JSON.parse(result);
             if (!result.channelId) {
                 document.getElementById("messages").innerHTML = "<h2>Please select a chat to start chatting</h2>";

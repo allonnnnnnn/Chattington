@@ -8,6 +8,7 @@ const userRepository = require("./repositories/userRepository");
 const friendshipRepository = require("./repositories/friendshipRepository");
 const channelRepository = require("./repositories/channelRepository");
 const messageRepository = require("./repositories/messageRepository");
+const { connect } = require("http2");
 
 const app = express();
 const port = 8000;
@@ -39,7 +40,7 @@ const messageRoutes = {
     "ChangeChannel": function (data) {
         channelRepository.getAChannel(data.userId, data.friendId, function (err, result) {
             if (err) throw err;
-            
+
             //Trying to change to the same channel
             if (result.length == 0 || clients[data.userId].channelId == result[0].id) return;
 
@@ -47,7 +48,7 @@ const messageRoutes = {
 
             messageRepository.findByChannelId(clients[data.userId].channelId, function (messagesErr, messagesResult) {
                 if (messagesErr) throw messagesErr;
-
+                console.log(messagesResult);
                 clients[data.userId].send(JSON.stringify({ "type": "incomingMessageHistory", "messages": messagesResult }));
             });
         });
@@ -62,20 +63,20 @@ const messageRoutes = {
 
             const friendId = (data.userId == result[0].user1Id) ? result[0].user2Id : result[0].user1Id;
             const date = Date(Date.now()).toString();
-            
-            //Check if the socket is also on the same channelId, if not, just don't send the message but a notification instead
-            const friendSocket = clients[friendId];
-            if (friendSocket && clients[data.userId].channelId == friendSocket.channelId) {
-                friendSocket.send(JSON.stringify({ "type": "incomingMessage", "message": data.message, "date": date, "name": clients[data.userId].username }));
-            }
+           
+            messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, date, function (err, messageResult) {
+                if (err) throw err;
 
-            messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, date, function (err) {
-                if (err) {
-                    throw err;
+                //Check if the socket is also on the same channelId, if not, just don't send the message but a notification instead
+                const friendSocket = clients[friendId];
+                const newMessageJSON = { "type": "incomingMessage", "channelId": clients[data.userId].channelId, "id": messageResult[0].id, "message": data.message, "date": date, "name": clients[data.userId].username };
+                if (friendSocket && clients[data.userId].channelId == friendSocket.channelId) {
+                    friendSocket.send(JSON.stringify(newMessageJSON));
                 }
+                newMessageJSON.type = "successfulSentMessage";
+                clients[data.userId].send(JSON.stringify(newMessageJSON))
             });
-            
-            clients[data.userId].send(JSON.stringify({ "type": "successfulSentMessage", "message": data.message, "date": date, "name": clients[data.userId].username }))
+
         });
     }
 }
@@ -105,25 +106,54 @@ socketServer.on("close", function (socket) {
     clients[socket.userId] = null;
 });
 
-app.delete("/deleteFriendship", function (req, res) {
-    channelRepository.getAChannel(req.session.userId, req.body.id, function(err, result) {
+app.put("/updateMessage", function (req, res) {
+    const messageId = req.body.id;
+    const newMessage = req.body.message;
+    const channelId = req.body.channelId;
+    
+    messageRepository.updateMessage(messageId, newMessage, function (err) {
         if (err) {
             throw err;
         }
-        
+
+        channelRepository.getAChannelWithChannelId(channelId, function (err, result) {
+            if (err) {
+                throw err;
+            }
+
+            let friendId = result[0].user1Id;
+            if (req.session.userId == result[0].user1Id) {
+                friendId = result[0].user2Id;
+            }
+
+            if (clients[friendId]) {
+                clients[friendId].send(JSON.stringify({ "type": "updateMessage", "message": newMessage, "id": messageId }));
+            }
+        });
+
+        res.send();
+    });
+});
+
+app.delete("/deleteFriendship", function (req, res) {
+    channelRepository.getAChannel(req.session.userId, req.body.id, function (err, result) {
+        if (err) {
+            throw err;
+        }
+
         if (clients[req.session.userId].channelId == result[0].id) {
             clients[req.session.userId].channelId = null;
         }
-        
+
         friendshipRepository.deleteByUserId(req.session.userId, req.body.id, function (err, result) {
             if (err) {
                 throw err;
             }
-            
+
             if (clients[req.body.id]) {
                 clients[req.body.id].send(JSON.stringify({ "type": "UpdateChannels" }));
             }
-    
+
             res.send();
         });
     });
@@ -196,8 +226,8 @@ app.post("/addFriend", function (req, res) {
     });
 });
 
-app.get("/getChannelId", function(req, res) {
-    res.send({"channelId": clients[req.session.userId].channelId});
+app.get("/getChannelId", function (req, res) {
+    res.send({ "channelId": clients[req.session.userId].channelId });
 });
 
 app.get("/getFriendships", function (req, res) {

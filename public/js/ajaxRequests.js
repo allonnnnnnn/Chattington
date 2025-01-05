@@ -31,6 +31,23 @@ function ajaxPOST(url, data, callback) {
     xhr.send(data);
 }
 
+function ajaxPUT(url, data, callback) {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function () {
+        if (this.status != 200 && this.readyState != XMLHttpRequest.DONE) {
+            console.log("Error occured: " + this.status);
+            return;
+        }
+
+        callback(this.responseText);
+    };
+
+    xhr.open("PUT", url);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(data);
+}
+
 function ajaxDELETE(url, data, callback) {
     const xhr = new XMLHttpRequest();
     
@@ -51,5 +68,6 @@ function ajaxDELETE(url, data, callback) {
 export {
     ajaxGET,
     ajaxPOST,
+    ajaxPUT,
     ajaxDELETE
 }

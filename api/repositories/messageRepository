@@ -1,15 +1,32 @@
 const connection = require("./database.js");
 
 module.exports = {
-    createMessage: function(userId, channelId, message, date, callback) {
+    createMessage: function (userId, channelId, message, date, callback) {
         connection.query(
             "INSERT INTO message(userId, channelId, message, date) VALUES (?, ?, ?, ?)",
             [userId, channelId, message, date],
-            callback
+            function(err) {
+                if (err) {
+                    throw err;
+                }
+
+                connection.query(
+                    "SELECT id FROM message WHERE id=LAST_INSERT_ID()",
+                    callback
+                )
+            }
         );
     },
 
-    findByChannelId: function(channelId, callback) {
+    updateMessage: function (messageId, newMessage, callback) {
+        connection.query(
+            "UPDATE message SET message=? WHERE id=?",
+            [newMessage, messageId],
+            callback
+        )
+    },
+
+    findByChannelId: function (channelId, callback) {
         connection.query(
             "SELECT message.*, user.name FROM message INNER JOIN user ON user.id = message.userId WHERE channelId=?",
             [channelId],
