@@ -8,7 +8,6 @@ const userRepository = require("./repositories/userRepository");
 const friendshipRepository = require("./repositories/friendshipRepository");
 const channelRepository = require("./repositories/channelRepository");
 const messageRepository = require("./repositories/messageRepository");
-const { connect } = require("http2");
 
 const app = express();
 const port = 8000;
@@ -48,7 +47,7 @@ const messageRoutes = {
 
             messageRepository.findByChannelId(clients[data.userId].channelId, function (messagesErr, messagesResult) {
                 if (messagesErr) throw messagesErr;
-                console.log(messagesResult);
+
                 clients[data.userId].send(JSON.stringify({ "type": "incomingMessageHistory", "messages": messagesResult }));
             });
         });
@@ -63,7 +62,7 @@ const messageRoutes = {
 
             const friendId = (data.userId == result[0].user1Id) ? result[0].user2Id : result[0].user1Id;
             const date = Date(Date.now()).toString();
-           
+
             messageRepository.createMessage(data.userId, clients[data.userId].channelId, data.message, date, function (err, messageResult) {
                 if (err) throw err;
 
@@ -110,29 +109,20 @@ app.put("/updateMessage", function (req, res) {
     const messageId = req.body.id;
     const newMessage = req.body.message;
     const channelId = req.body.channelId;
-    
+
     messageRepository.updateMessage(messageId, newMessage, function (err) {
         if (err) {
             throw err;
         }
 
-        channelRepository.getAChannelWithChannelId(channelId, function (err, result) {
-            if (err) {
-                throw err;
-            }
-
-            let friendId = result[0].user1Id;
-            if (req.session.userId == result[0].user1Id) {
-                friendId = result[0].user2Id;
-            }
-
+        getFriendIdFromChannel(req.session.userId, channelId, function(friendId) {
             if (clients[friendId]) {
                 clients[friendId].send(JSON.stringify({ "type": "updateMessage", "message": newMessage, "id": messageId }));
             }
         });
-
-        res.send();
     });
+
+    res.send();
 });
 
 app.delete("/deleteFriendship", function (req, res) {
@@ -145,10 +135,11 @@ app.delete("/deleteFriendship", function (req, res) {
             clients[req.session.userId].channelId = null;
         }
 
-        friendshipRepository.deleteByUserId(req.session.userId, req.body.id, function (err, result) {
+        friendshipRepository.deleteByUserId(req.session.userId, req.body.id, function (err) {
             if (err) {
                 throw err;
             }
+
 
             if (clients[req.body.id]) {
                 clients[req.body.id].send(JSON.stringify({ "type": "UpdateChannels" }));
@@ -158,6 +149,39 @@ app.delete("/deleteFriendship", function (req, res) {
         });
     });
 });
+
+app.delete("/deleteMessage", function (req, res) {
+    //Should probably check if it's even the user's message but idrc
+    const messageId = req.body.id;
+    const channelId = req.body.channelId;
+
+    messageRepository.deleteMessage(messageId, function (err) {
+        if (err) throw err;
+
+        getFriendIdFromChannel(req.session.userId, channelId, function(friendId) {
+            if (clients[friendId]) {
+                clients[friendId].send(JSON.stringify({ "type": "deleteMessage", "id": messageId }));
+            }
+        });
+
+        res.send();
+    });
+});
+
+function getFriendIdFromChannel(userId, channelId, callback) {
+    channelRepository.getAChannelWithChannelId(channelId, function (err, result) {
+        if (err) {
+            throw err;
+        }
+
+        let friendId = result[0].user1Id;
+        if (userId == result[0].user1Id) {
+            friendId = result[0].user2Id;
+        }
+
+        callback(friendId);
+    });
+}
 
 app.post("/login", loginsInUser);
 

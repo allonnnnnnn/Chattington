@@ -26,6 +26,14 @@ module.exports = {
         )
     },
 
+    deleteMessage: function (messageId, callback) {
+        connection.query(
+            "DELETE FROM message WHERE id=?",
+            [messageId],
+            callback
+        );
+    },
+
     findByChannelId: function (channelId, callback) {
         connection.query(
             "SELECT message.*, user.name FROM message INNER JOIN user ON user.id = message.userId WHERE channelId=?",

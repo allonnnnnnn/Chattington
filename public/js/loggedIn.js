@@ -62,7 +62,7 @@ function loadMessage(templateElement, data) {
 function onEditMessage(messageDOM, data) {
     const editBox = messageDOM.querySelector(".editBox").cloneNode(true);
     const text = messageDOM.querySelector(".text");
-    
+
     messageDOM.querySelector(".editBox").replaceWith(editBox);
 
     text.style.display = "none";
@@ -89,7 +89,11 @@ function onEditMessage(messageDOM, data) {
 }
 
 function onDeleteMessage(messageDOM, data) {
-
+    //I'm not doing a popup
+    
+    ajaxDELETE("deleteMessage", JSON.stringify({"id": data.id, "channelId": data.channelId}), function () {
+        messageDOM.remove();
+    });
 }
 
 const socketMessageRoutes = {
@@ -103,7 +107,7 @@ const socketMessageRoutes = {
     },
     "incomingMessageHistory": function (data) {
         document.getElementById("messages").innerHTML = "";
-        console.log(data.messages);
+        
         data["messages"].forEach(message => {
             if (socket.userId == message.userId) {
                 loadMessage(document.getElementById("userMessageTemplate"), message);
@@ -113,15 +117,26 @@ const socketMessageRoutes = {
         });
     },
     "updateMessage": function (data) {
-        const childElements = document.getElementById("messages").children;
+        findMatchingMessageId(data.id, function (element) {
+            element.querySelector(".text").innerText = data.message;
+        });
+    },
+    "deleteMessage": function (data) {
+        findMatchingMessageId(data.id, function (element) {
+            element.remove();
+        });
+    }
+}
 
-        for (let i = 0; i < document.getElementById("messages").children.length; i++) {
-            const element = childElements[i];
+function findMatchingMessageId(messageId, callback) {
+    const childElements = document.getElementById("messages").children;
 
-            if (childElements[i].id == data.id) {
-                element.querySelector(".text").innerText = data.message;
-                break;
-            }
+    for (let i = 0; i < document.getElementById("messages").children.length; i++) {
+        const element = childElements[i];
+
+        if (childElements[i].id == messageId) {
+            callback(element);
+            break;
         }
     }
 }
