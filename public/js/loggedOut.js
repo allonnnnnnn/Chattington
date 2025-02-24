@@ -1,5 +1,13 @@
 import { ajaxGET, ajaxPOST } from "/js/ajaxRequests.js";
 
+document.getElementById("email").addEventListener("click", function(event) {
+    document.getElementById("errorMessage").style.visibility = "hidden";
+});
+
+document.getElementById("password").addEventListener("click", function(event) {
+    document.getElementById("errorMessage").style.visibility = "hidden";
+});
+
 document.getElementById("loginForm").addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -11,7 +19,8 @@ document.getElementById("loginForm").addEventListener("submit", function (event)
         response = JSON.parse(response);
 
         if (response.status != "success") {
-            //put this message below the login submit button
+            document.getElementById("errorMessage").style.visibility = "visible";
+            document.getElementById("errorMessage").textContent = "Invalid username or password";
             return;
         }
 

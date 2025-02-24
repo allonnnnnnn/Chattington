@@ -7,7 +7,7 @@ const webSocket = require("ws");
 const userRepository = require("./repositories/userRepository");
 const friendshipRepository = require("./repositories/friendshipRepository");
 const channelRepository = require("./repositories/channelRepository");
-const messageRepository = require("./repositories/messageRepository");
+const messageRepository = require("./repositories/messageRepository.js");
 
 const app = express();
 const port = 8000;
@@ -115,7 +115,7 @@ app.put("/updateMessage", function (req, res) {
             throw err;
         }
 
-        getFriendIdFromChannel(req.session.userId, channelId, function(friendId) {
+        getFriendIdFromChannel(req.session.userId, channelId, function (friendId) {
             if (clients[friendId]) {
                 clients[friendId].send(JSON.stringify({ "type": "updateMessage", "message": newMessage, "id": messageId }));
             }
@@ -158,7 +158,7 @@ app.delete("/deleteMessage", function (req, res) {
     messageRepository.deleteMessage(messageId, function (err) {
         if (err) throw err;
 
-        getFriendIdFromChannel(req.session.userId, channelId, function(friendId) {
+        getFriendIdFromChannel(req.session.userId, channelId, function (friendId) {
             if (clients[friendId]) {
                 clients[friendId].send(JSON.stringify({ "type": "deleteMessage", "id": messageId }));
             }
