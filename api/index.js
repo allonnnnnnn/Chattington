@@ -302,7 +302,6 @@ app.get("/logout", function (req, res) {
             return;
         }
 
-        res.clearCookie("connect.sid");
         res.redirect("/");
     })
 });
