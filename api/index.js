@@ -198,12 +198,12 @@ app.post("/createNewAccount", function (req, res) {
 function loginsInUser(req, res) {
     userRepository.findByEmailAndPassword(req.body.email, req.body.password, function (err, result) {
         if (err) {
-            res.send({ "status": "failed", "message": "Something happened. Please try again" });
+            res.status(400).send({ "status": "failed", "message": "Something happened. Please try again" });
             return;
         }
 
         if (result.length == 0) {
-            res.send({ "status": "failed", "message": "No account" });
+            res.status(400).send({ "status": "failed", "message": "No account" });
             return;
         }
 
@@ -212,7 +212,7 @@ function loginsInUser(req, res) {
         req.session.email = result[0].email;
         req.session.name = result[0].name;
 
-        res.send({ "status": "success", "message": "Found account" });
+        res.status(200).send({ "status": "success", "message": "Found account" });
     });
 }
 
@@ -302,7 +302,7 @@ app.get("/logout", function (req, res) {
             return;
         }
 
-        res.redirect("/");
+        res.redirect(300, "/");
     })
 });
 
