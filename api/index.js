@@ -112,17 +112,16 @@ app.put("/updateMessage", function (req, res) {
 
     messageRepository.updateMessage(messageId, newMessage, function (err) {
         if (err) {
-            throw err;
+            return res.send({ "status": "failed", "message": err });
         }
 
+        res.send({ "status": "success" });
         getFriendIdFromChannel(req.session.userId, channelId, function (friendId) {
             if (clients[friendId]) {
                 clients[friendId].send(JSON.stringify({ "type": "updateMessage", "message": newMessage, "id": messageId }));
             }
         });
     });
-
-    res.send();
 });
 
 app.delete("/deleteFriendship", function (req, res) {
@@ -188,7 +187,9 @@ app.post("/login", loginsInUser);
 app.post("/createNewAccount", function (req, res) {
     userRepository.createUser(req.body.email, req.body.name, req.body.password, function (err, result) {
         //Most likely this err will result from an already created user
-        if (err) throw err;
+        if (err) {
+            return res.status(400).send({"status": "failed", "message": err });
+        }
 
         loginsInUser(req, res);
     });
