@@ -188,7 +188,7 @@ app.post("/createNewAccount", function (req, res) {
     userRepository.createUser(req.body.email, req.body.name, req.body.password, function (err, result) {
         //Most likely this err will result from an already created user
         if (err) {
-            return res.status(400).send({"status": "failed", "message": "Account already created with same email" });
+            return res.status(400).send({ "status": "failed", "message": "Account already created with same email" });
         }
 
         loginsInUser(req, res);
@@ -294,8 +294,11 @@ app.get("/getUser", function (req, res) {
 });
 
 app.get("/logout", function (req, res) {
-    if (!req.session) return;
-
+    if (!req.session) {
+        res.redirect("/");
+        return;
+    }
+    
     req.session.destroy(function (error) {
         if (error) {
             res.status(400).send("unable to logout")
