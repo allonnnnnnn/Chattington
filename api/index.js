@@ -188,7 +188,7 @@ app.post("/createNewAccount", function (req, res) {
     userRepository.createUser(req.body.email, req.body.name, req.body.password, function (err, result) {
         //Most likely this err will result from an already created user
         if (err) {
-            return res.status(400).send({"status": "failed", "message": err });
+            return res.status(400).send({"status": "failed", "message": "Account already created with same email" });
         }
 
         loginsInUser(req, res);
