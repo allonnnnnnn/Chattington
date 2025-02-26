@@ -130,7 +130,8 @@ app.delete("/deleteFriendship", function (req, res) {
             return res.status(400).send({"status": "failed", "message": "Failed to find channel"});
         }
 
-        if (clients[req.session.userId].channelId == result[0].id) {
+        console.log(req.session.userId);
+        if (clients[req.session.userId] && clients[req.session.userId].channelId == result[0].id) {
             clients[req.session.userId].channelId = null;
         }
 
