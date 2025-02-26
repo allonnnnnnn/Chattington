@@ -221,23 +221,23 @@ app.post("/addFriend", function (req, res) {
 
     userRepository.findByEmail(friendEmail, function (err, userResult) {
         if (err) {
-            res.send({ 'status': 'failed', 'message': 'Something realllllly happened this time. Pls try again :)' });
+            res.status(400).send({ 'status': 'failed', 'message': 'Something realllllly happened this time. Pls try again :)' });
             return;
         }
 
         if (userResult.length == 0) {
-            res.send({ 'status': 'failed', 'message': 'No user found' });
+            res.status(400).send({ 'status': 'failed', 'message': 'No user found' });
             return;
         }
 
         friendshipRepository.createRelationship(req.session.userId, userResult[0].id, function (err) {
             if (err == 1) {
-                res.send({ 'status': 'failed', 'message': "That's you bruh" });
+                res.status(400).send({ 'status': 'failed', 'message': "That's you bruh" });
                 return;
             }
 
             if (err) {
-                res.send({ 'status': 'failed', 'message': 'Already is a friend bruh' });
+                res.status(400).send({ 'status': 'failed', 'message': 'Already is a friend bruh' });
                 return;
             }
 
@@ -246,7 +246,7 @@ app.post("/addFriend", function (req, res) {
             }
             channelRepository.createChannel(req.session.userId, userResult[0].id, (err) => { if (err) throw err; });
 
-            res.send({ 'status': 'success', 'message': 'Added friend' });
+            res.status(200).send({ 'status': 'success', 'message': 'Added friend' });
         });
     });
 });
@@ -298,7 +298,7 @@ app.get("/logout", function (req, res) {
         res.redirect("/");
         return;
     }
-    
+
     req.session.destroy(function (error) {
         if (error) {
             res.status(400).send("unable to logout")
