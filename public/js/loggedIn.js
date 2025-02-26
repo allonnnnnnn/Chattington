@@ -1,7 +1,7 @@
 import { ajaxGET, ajaxPOST, ajaxPUT, ajaxDELETE } from "/js/ajaxRequests.js";
 
-const socket = new WebSocket("wss://chattington-production.up.railway.app");
-// const socket = new WebSocket("ws://localhost:8000");
+// const socket = new WebSocket("wss://chattington-production.up.railway.app");
+const socket = new WebSocket("ws://localhost:8000");
 
 function onLoggedIn() {
     ajaxGET("/getUser", function (result) {
@@ -197,9 +197,10 @@ popup.querySelector("form").addEventListener("submit", function (event) {
     event.preventDefault();
 
     const friendEmail = emailInput.value;
+    console.log(friendEmail);
     ajaxPOST("/addFriend", JSON.stringify({ 'email': friendEmail }), function (response) {
         response = JSON.parse(response);
-
+        console.log(response);
         if (response.status == "failed") {
             messageElement.style["color"] = "red";
             messageElement.innerText = response.message;

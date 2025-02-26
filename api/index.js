@@ -127,7 +127,7 @@ app.put("/updateMessage", function (req, res) {
 app.delete("/deleteFriendship", function (req, res) {
     channelRepository.getAChannel(req.session.userId, req.body.id, function (err, result) {
         if (err) {
-            throw err;
+            return res.status(400).send({"status": "failed", "message": "Failed to find channel"});
         }
 
         if (clients[req.session.userId].channelId == result[0].id) {
@@ -136,7 +136,7 @@ app.delete("/deleteFriendship", function (req, res) {
 
         friendshipRepository.deleteByUserId(req.session.userId, req.body.id, function (err) {
             if (err) {
-                throw err;
+                return res.status(400).send({"status": "failed", "message": "Failed to delete friendship"});
             }
 
 
@@ -144,7 +144,7 @@ app.delete("/deleteFriendship", function (req, res) {
                 clients[req.body.id].send(JSON.stringify({ "type": "UpdateChannels" }));
             }
 
-            res.send();
+            res.status(200).send({"status": "successful", "message": "Deleted friendship"});
         });
     });
 });
