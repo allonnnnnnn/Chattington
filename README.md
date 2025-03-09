@@ -1,8 +1,9 @@
 # Chattington 💬
 
-Chattington is a real-time chat application that leverages WebSockets and RESTful APIs to enable instant messaging, friend management, and message editing/deletion. Built with Node.js, Express, and vanilla JavaScript, it provides a seamless and responsive chatting experience.
+Chattington is a real-time chat application that leverages WebSockets and RESTful APIs to enable instant messaging, friend management, and message editing/deletion. Built with Node.js, Express, and JavaScript, it provides a seamless and responsive chatting experience.
 
-![Demo Screenshot](./public/images/image.png) 
+![Demo Screenshot](./public/images/LoginPage.png) 
+![Demo Screenshot](./public/images/MainPage.png) 
 
 ## Features ✨
 
@@ -16,7 +17,7 @@ Chattington is a real-time chat application that leverages WebSockets and RESTfu
 ## Technologies 🛠️
 
 - **Backend**: Node.js, Express, MySQL
-- **Frontend**: Vanilla JavaScript, WebSockets
+- **Frontend**: JavaScript, WebSockets
 - **Database**: MySQL (hosted on Railway)
 - **Authentication**: Express sessions, cookie-based
 - **Environment Management**: `dotenv`
@@ -121,4 +122,4 @@ CREATE TABLE message (
 
 ## License 📚
 
-MIT License. See `LICENSE` for details.
+MIT License
