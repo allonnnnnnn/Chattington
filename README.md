@@ -1,5 +1,7 @@
 # Chattington 💬
 
+**Hosted Link**: https://chattington-production.up.railway.app
+
 Chattington is a real-time chat application that leverages WebSockets and RESTful APIs to enable instant messaging, friend management, and message editing/deletion. Built with Node.js, Express, and JavaScript, it provides a seamless and responsive chatting experience.
 
 ![Demo Screenshot](./public/images/LoginPage.png) 
