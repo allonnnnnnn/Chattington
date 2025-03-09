@@ -21,40 +21,39 @@ Chattington is a real-time chat application that leverages WebSockets and RESTfu
 - **Authentication**: Express sessions, cookie-based
 - **Environment Management**: `dotenv`
 
-## Installation 📥
+## Installation 👥
 
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/allonnnnnnn/Chattington.git
    cd Chattington
-Install dependencies:
+   ```
 
-bash
-Copy
-npm install express mysql2 dotenv express-session ws crypto
-Database Setup:
+2. **Install dependencies**:
+   ```bash
+   npm install express mysql2 dotenv express-session ws crypto
+   ```
 
-Create a MySQL database (e.g., railway).
+3. **Database Setup**:
+   - Create a MySQL database (e.g., railway).
+   - Create tables for user, friendship, channel, and message (see Database Schema).
 
-Create tables for user, friendship, channel, and message (see Database Schema).
+4. **Environment Variables**:
+   - Create a `.env` file in the root directory:
+     ```env
+     DBHOST=your_database_host
+     DBPASSWORD=your_database_password
+     ```
 
-Environment Variables:
-Create a .env file in the root directory:
+5. **Run the server**:
+   ```bash
+   node index.js
+   ```
+   Access the app at `http://localhost:8000`.
 
-env
-Copy
-DBHOST=your_database_host
-DBPASSWORD=your_database_password
-Run the server:
+## Database Schema 💃📛
 
-bash
-Copy
-node index.js
-Access the app at http://localhost:8000.
-
-Database Schema 🗃️
-sql
-Copy
+```sql
 -- Example schema (adjust based on your actual table structures)
 CREATE TABLE user (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,32 +87,38 @@ CREATE TABLE message (
   FOREIGN KEY (userId) REFERENCES user(id),
   FOREIGN KEY (channelId) REFERENCES channel(id)
 );
-API Endpoints 🌐
-Method	Endpoint	Description
-POST	/login	User login
-POST	/createNewAccount	Create a new account
-POST	/addFriend	Add a friend by email
-DELETE	/deleteFriendship	Remove a friend
-PUT	/updateMessage	Edit a message
-DELETE	/deleteMessage	Delete a message
-GET	/getFriendships	Fetch all friends
-GET	/getChannelId	Get current chat channel ID
-Contributing 🤝
-Fork the repository.
+```
 
-Create a feature branch: git checkout -b feature/new-feature.
+## API Endpoints 🌐
 
-Commit changes: git commit -m "Add new feature".
+| Method | Endpoint             | Description          |
+|--------|----------------------|----------------------|
+| POST   | `/login`             | User login          |
+| POST   | `/createNewAccount`  | Create a new account |
+| POST   | `/addFriend`         | Add a friend by email |
+| DELETE | `/deleteFriendship`  | Remove a friend |
+| PUT    | `/updateMessage`     | Edit a message |
+| DELETE | `/deleteMessage`     | Delete a message |
+| GET    | `/getFriendships`    | Fetch all friends |
+| GET    | `/getChannelId`      | Get current chat channel ID |
 
-Push to the branch: git push origin feature/new-feature.
+## Contributing 🤝
 
-Submit a pull request.
+1. Fork the repository.
+2. Create a feature branch:
+   ```bash
+   git checkout -b feature/new-feature
+   ```
+3. Commit changes:
+   ```bash
+   git commit -m "Add new feature"
+   ```
+4. Push to the branch:
+   ```bash
+   git push origin feature/new-feature
+   ```
+5. Submit a pull request.
 
-License 📄
-MIT License. See LICENSE for details.
+## License 📚
 
-Copy
-
----
-
-Replace placeholder text (e.g., database schema, screenshots) with actual content. Add deployment instructions if hosted on Railway or another platform.
+MIT License. See `LICENSE` for details.
