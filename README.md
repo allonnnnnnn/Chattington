@@ -2,7 +2,7 @@
 
 Chattington is a real-time chat application that leverages WebSockets and RESTful APIs to enable instant messaging, friend management, and message editing/deletion. Built with Node.js, Express, and vanilla JavaScript, it provides a seamless and responsive chatting experience.
 
-![Demo Screenshot](https://via.placeholder.com/800x500.png?text=Chattington+Demo) *Add your own screenshot here*
+![Demo Screenshot](./public/images/image.png) 
 
 ## Features ✨
 
